@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Jogo da Memória Diários de uma apotecária</title>
+        <link rel="stylesheet" href="css/style.css">
+        
+    </head>
+    <body>
+        <nav class="navbar">
+            <div class="nav-container">
+            <a href="https://jogos-da-memoria-animes-3wt7.vercel.app/" class="logo">Jogos de memória</a>
+                <ul class="nav-links">
+                    <li><a href="https://jogos-da-memoria-animes-3wt7.vercel.app/">Início</a></li>
+                    <li><a href="https://jogos-da-memoria-animes-p3ok.vercel.app/">Toilet Bound Hanako-kun</a></li>
+                    <li><a href="https://jogos-da-memoria-animes-eill.vercel.app/">Diários de uma apotecária</a></li>
+                    <li><a href="jogos-da-memoria-ani-git-2f06b7-hevelinduarte002-7766s-projects.vercel.app/">Frieren e a jornada para o além</a></li>
+                    <li><a href="https://jogos-da-memoria-animes-so8a.vercel.app/">Spy X Family</a></li>
+                </ul>
+            </div>
+        </nav>
+        <header>
+            <br>
+            <h1>Jogo da Memória</h1> 
+            <h1 style="color: #bc6828bc; text-align: center; font-size: 60px;">Diários de uma apotecária</h1>
+            <br>
+        </header>
+        
+        <div class="container-principal" style="background-color:#d09c73bc;">
+        <div class="grade-imagens">
+        <table>
+            
+        <script>
+
+            // Cria um array com os nomes dos personagens.
+            // Cada nome corresponde a uma imagem dentro da pasta img.
+
+            const personagens = [
+                "AhDuo",
+                "Gaoshun",
+                "Gyokuyo",
+                "Jinshi",
+                "Lihaku",
+                "Lihua",
+                "Lishu",
+                "Maomao1",
+                "Shisui",
+                "Xiaolan"
+            ]
+            // Cria o array das cartas do jogo.
+            // [...personagens, ...personagens] duplica o array.
+            // Isso é necessário porque no jogo da memória cada carta precisa ter um par.
+
+            const cartas = [...personagens, ...personagens];
+
+            // Embaralha as cartas aleatoriamente.
+            // sort() organiza o array.
+            // Math.random() gera números aleatórios.
+            // Isso faz com que as cartas apareçam em posições diferentes a cada jogo.
+
+            cartas.sort(() => Math.random() -0.5);
+
+            // Guarda qual foi a primeira carta clicada.
+            // Começa como null porque nenhuma carta foi clicada ainda.
+            let primeiraCarta = null;
+
+            // Guarda qual foi a segunda carta clicada.
+            let segundaCarta = null;
+
+            // Variável usada para bloquear o jogo enquanto as cartas estão sendo verificadas.
+            // Isso impede que o jogador clique em outras cartas antes da comparação terminar.
+            let bloqueado = false;
+
+
+            // Função chamada quando o jogador clica em uma carta.
+            // O número da carta (posição) é enviado pelo HTML.
+            function VirarCarta(posicao) {
+
+                // Se o jogo estiver bloqueado, a função para imediatamente.
+                // Isso evita cliques durante a verificação das cartas.
+                if(bloqueado) return
+
+                // Procura no HTML o elemento com o id igual à posição da carta.
+                // Exemplo: id="1", id="2", etc.
+                let carta = document.getElementById(posicao);
+
+                // Descobre qual personagem corresponde a essa posição.
+                // -1 porque arrays começam na posição 0.
+                let personagem = cartas[posicao-1]
+
+                // Troca a imagem da carta pelo personagem correspondente.
+                carta.src = "img/" + personagem + ".jpg"
+
+                // Se ainda não existe primeira carta escolhida
+                if(primeiraCarta == null) {
+                    // Guarda a posição da primeira carta clicada
+                    primeiraCarta = posicao
+
+                // Se já existe primeira carta, agora será a segunda
+                }else if(segundaCarta == null){
+
+                    // Guarda a posição da segunda carta
+                    segundaCarta = posicao
+
+                    // Bloqueia o jogo para impedir mais cliques
+                    bloqueado = true
+
+                    // Espera 800 milissegundos (0,8 segundos)
+                    setTimeout(verificarPar, 800)
+                }
+                }
+
+            // Função responsável por verificar se as duas cartas escolhidas formam um par
+            function verificarPar(){
+                let personagem1 = cartas[primeiraCarta-1];
+                let personagem2 = cartas[segundaCarta-1];
+                if(personagem1 == personagem2){
+                    //acertou
+                    paresEncontrados++;
+                    verificarVitoria(); 
+
+                    primeiraCarta = null;
+                    segundaCarta = null;
+                    bloqueado = false;
+                }else{
+                    //errou
+                    document.getElementById(primeiraCarta).src = "img/VersoDaCarta.jpg";
+                    document.getElementById(segundaCarta).src = "img/VersoDaCarta.jpg";
+                    primeiraCarta = null;
+                    segundaCarta = null;
+                    bloqueado = false;
+                }
+            }
+
+            let paresEncontrados = 0;
+            let totalPares = 10;
+
+            function verificarVitoria(){
+                if (paresEncontrados === totalPares){
+                    mostrarVitoria();
+                }
+            }
+
+            function mostrarVitoria(){
+                const tela = document.getElementById("tela-vitoria");
+                tela.classList.add("ativa");
+            }
+
+            function reiniciarJogo(){
+                location.reload();
+            }
+
+            function comecarJogo() {
+                jogoIniciado = true; // se você estiver usando o bloqueio
+                document.getElementById("tela-inicial").style.display = "none";
+            }
+        </script>
+        
+            <tr class="linha-espaco">
+                <td colspan="11"></td>
+            </tr>
+            <tr>
+                <td><img id="1" src="img/VersoDaCarta.jpg" onclick="VirarCarta(1)"></td>
+                <td><img id="2" src="img/VersoDaCarta.jpg" onclick="VirarCarta(2)"></td>
+                <td><img id="3" src="img/VersoDaCarta.jpg" onclick="VirarCarta(3)"></td>
+                <td><img id="4" src="img/VersoDaCarta.jpg" onclick="VirarCarta(4)"></td>
+                <td><img id="5" src="img/VersoDaCarta.jpg" onclick="VirarCarta(5)"></td>
+
+                <td class="espaco"></td>
+            
+                <td><img id="6" src="img/VersoDaCarta.jpg" onclick="VirarCarta(6)"></td>
+                <td><img id="7" src="img/VersoDaCarta.jpg" onclick="VirarCarta(7)"></td>
+                <td><img id="8" src="img/VersoDaCarta.jpg" onclick="VirarCarta(8)"></td>
+                <td><img id="9" src="img/VersoDaCarta.jpg" onclick="VirarCarta(9)"></td>
+                <td><img id="10" src="img/VersoDaCarta.jpg" onclick="VirarCarta(10)"></td>
+            </tr>
+
+            <tr class="linha-espaco">
+                <td colspan="11"></td>
+            </tr>
+
+            <tr>
+                <td><img id="11" src="img/VersoDaCarta.jpg" onclick="VirarCarta(11)"></td>
+                <td><img id="12" src="img/VersoDaCarta.jpg" onclick="VirarCarta(12)"></td>
+                <td><img id="13" src="img/VersoDaCarta.jpg" onclick="VirarCarta(13)"></td>
+                <td><img id="14" src="img/VersoDaCarta.jpg" onclick="VirarCarta(14)"></td>
+                <td><img id="15" src="img/VersoDaCarta.jpg" onclick="VirarCarta(15)"></td>
+                
+                <td class="espaco"></td>
+
+                <td><img id="16" src="img/VersoDaCarta.jpg" onclick="VirarCarta(16)"></td>
+                <td><img id="17" src="img/VersoDaCarta.jpg" onclick="VirarCarta(17)"></td>
+                <td><img id="18" src="img/VersoDaCarta.jpg" onclick="VirarCarta(18)"></td>
+                <td><img id="19" src="img/VersoDaCarta.jpg" onclick="VirarCarta(19)"></td>
+                <td><img id="20" src="img/VersoDaCarta.jpg" onclick="VirarCarta(20)"></td>
+            </tr>
+            <tr class="linha-espaco">
+                <td colspan="11"></td>
+            </tr>
+        </table>
+        <div id="tela-vitoria" class="vitoria">
+        <div class="vitoria-conteudo">
+            <h2>🎉 Vitória!</h2>
+            <p>Você encontrou todos os pares!</p>
+            <button onclick="reiniciarJogo()">Jogar novamente</button>
+        </div>
+        </div>
+        <div id="tela-inicial" class="inicio">
+            <div class="inicio-conteudo">
+                <button onclick="comecarJogo()">Começar jogo</button>
+            </div>
+            <br>
+            <br>
+       
+        <footer>
+        <br>
+        <p>© 2026 - Hevelin Duarte </p>
+        <p>Contato: <a href="hevelinduarte002@gmail.com">hevelinduarte002@gmail.com</a></p>
+        <p>LinkedIn: <a href="www.linkedin.com/in/hevelin-duarte-guerra-084bbb2a9">www.linkedin.com/in/hevelin-duarte-guerra-084bbb2a9</a></p>
+        <br>
+    </body>
+    
+    </footer>
+</html>
